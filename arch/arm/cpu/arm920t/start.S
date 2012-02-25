@@ -1,8 +1,8 @@
 /*
  *  armboot - Startup Code for ARM920 CPU-core
  *
- *  Copyright (c) 2001	Marius Gröger <mag@sysgo.de>
- *  Copyright (c) 2002	Alex Züpke <azu@sysgo.de>
+ *  Copyright (c) 2001	Marius Grï¿½ger <mag@sysgo.de>
+ *  Copyright (c) 2002	Alex Zï¿½pke <azu@sysgo.de>
  *  Copyright (c) 2002	Gary Jennejohn <garyj@denx.de>
  *
  * See file CREDITS for list of people who contributed to this
@@ -114,37 +114,12 @@ start_code:
 	orr	r0, r0, #0xd3
 	msr	cpsr, r0
 
-	bl	coloured_LED_init
-	bl	red_LED_on
-
-#if	defined(CONFIG_AT91RM9200DK) || defined(CONFIG_AT91RM9200EK)
-	/*
-	 * relocate exception table
-	 */
-	ldr	r0, =_start
-	ldr	r1, =0x0
-	mov	r2, #16
-copyex:
-	subs	r2, r2, #1
-	ldr	r3, [r0], #4
-	str	r3, [r1], #4
-	bne	copyex
-#endif
-
-#ifdef CONFIG_S3C24X0
-	/* turn off the watchdog */
-
-# if defined(CONFIG_S3C2400)
-#  define pWTCON	0x15300000
-#  define INTMSK	0x14400008	/* Interupt-Controller base addresses */
-#  define CLKDIVN	0x14800014	/* clock divisor register */
-#else
 #  define pWTCON	0x53000000
 #  define INTMSK	0x4A000008	/* Interupt-Controller base addresses */
 #  define INTSUBMSK	0x4A00001C
 #  define CLKDIVN	0x4C000014	/* clock divisor register */
-# endif
 
+	/* turn off the watchdog */
 	ldr	r0, =pWTCON
 	mov	r1, #0x0
 	str	r1, [r0]
@@ -155,18 +130,29 @@ copyex:
 	mov	r1, #0xffffffff
 	ldr	r0, =INTMSK
 	str	r1, [r0]
-# if defined(CONFIG_S3C2410)
-	ldr	r1, =0x3ff
+	ldr	r1, =0x7fff
 	ldr	r0, =INTSUBMSK
 	str	r1, [r0]
-# endif
 
-	/* FCLK:HCLK:PCLK = 1:2:4 */
-	/* default FCLK is 120 MHz ! */
+	/* FCLK:HCLK:PCLK = 1:4:8 */
 	ldr	r0, =CLKDIVN
-	mov	r1, #3
+	mov	r1, #5
 	str	r1, [r0]
-#endif	/* CONFIG_S3C24X0 */
+
+	/*
+	 * chang "fast bus mode" to "asynchronous bus mode"
+	 */
+	mrc    p15, 0, r1, c1, c0, 0
+	orr    r1, r1, #0xc0000000
+	mcr    p15, 0, r1, c1, c0, 0
+
+	/*
+	 * 400MHZ: ((0x5c<<12)|(0x01<<4)|(0x01))
+	 * 200MHZ: ((0x5c<<12)|(0x01<<4)|(0x02))
+	 */
+	ldr	r2, =((0x5c<<12)|(0x01<<4)|(0x01))
+	ldr	r1, =0x4c000004
+	str	r2, [r1]
 
 	/*
 	 * we do sys-critical inits only at reboot,
