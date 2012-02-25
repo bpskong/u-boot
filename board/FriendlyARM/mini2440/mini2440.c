@@ -68,50 +68,37 @@ static inline void delay (unsigned long loops)
 
 int board_init (void)
 {
-	struct s3c24x0_clock_power * const clk_power =
-					s3c24x0_get_base_clock_power();
 	struct s3c24x0_gpio * const gpio = s3c24x0_get_base_gpio();
-
-	/* to reduce PLL lock time, adjust the LOCKTIME register */
-	clk_power->LOCKTIME = 0xFFFFFF;
-
-	/* configure MPLL */
-	clk_power->MPLLCON = ((M_MDIV << 12) + (M_PDIV << 4) + M_SDIV);
-
-	/* some delay between MPLL and UPLL */
-	delay (4000);
-
-	/* configure UPLL */
-	clk_power->UPLLCON = ((U_M_MDIV << 12) + (U_M_PDIV << 4) + U_M_SDIV);
-
-	/* some delay between MPLL and UPLL */
-	delay (8000);
 
 	/* set up the I/O ports */
 	gpio->GPACON = 0x007FFFFF;
-	gpio->GPBCON = 0x00044555;
+	gpio->GPBCON = 0x00295551;
 	gpio->GPBUP = 0x000007FF;
-	gpio->GPCCON = 0xAAAAAAAA;
-	gpio->GPCUP = 0x0000FFFF;
+	gpio->GPCCON = 0xAAAAA6AA;
+	gpio->GPCDAT &= ~(1<<5);
+	gpio->GPCUP = 0xFFFFFFFF;
 	gpio->GPDCON = 0xAAAAAAAA;
-	gpio->GPDUP = 0x0000FFFF;
+	gpio->GPDUP = 0xFFFFFFFF;
 	gpio->GPECON = 0xAAAAAAAA;
 	gpio->GPEUP = 0x0000FFFF;
 	gpio->GPFCON = 0x000055AA;
 	gpio->GPFUP = 0x000000FF;
-	gpio->GPGCON = 0xFF95FFBA;
+	gpio->GPGCON = 0xFF95FF3A;
 	gpio->GPGUP = 0x0000FFFF;
-	gpio->GPHCON = 0x002AFAAA;
+	gpio->GPHCON = 0x0016FAAA;
 	gpio->GPHUP = 0x000007FF;
+	gpio->EXTINT0=0x22222222;
+	gpio->EXTINT1=0x22222222;
+	gpio->EXTINT2=0x22222222;
 
-	/* arch number of SMDK2410-Board */
-	gd->bd->bi_arch_number = MACH_TYPE_SMDK2410;
+	/* arch number of MINI2440-Board */
+	gd->bd->bi_arch_number = MACH_TYPE_MINI2440;
 
 	/* adress of boot parameters */
 	gd->bd->bi_boot_params = 0x30000100;
 
-	icache_enable();
-	dcache_enable();
+//	icache_enable();
+//	dcache_enable();
 
 	return 0;
 }

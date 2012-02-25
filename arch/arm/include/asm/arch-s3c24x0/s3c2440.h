@@ -1,6 +1,6 @@
 /*
  * (C) Copyright 2003
- * David Müller ELSOFT AG Switzerland. d.mueller@elsoft.ch
+ * David Mï¿½ller ELSOFT AG Switzerland. d.mueller@elsoft.ch
  *
  * See file CREDITS for list of people who contributed to this
  * project.
@@ -22,21 +22,34 @@
  */
 
 /************************************************
- * NAME	    : s3c2410.h
+ * NAME	    : s3c2440.h
  * Version  : 31.3.2003
  *
- * Based on S3C2410X User's manual Rev 1.1
+ * Based on S3C2440A User's manual Rev 1
  ************************************************/
 
 #ifndef __S3C2410_H__
 #define __S3C2410_H__
 
+#define S3C2440_CLKDIVN_PDIVN        (1<<0)
+#define S3C2440_CLKDIVN_HDIVN_MASK   (3<<1)
+#define S3C2440_CLKDIVN_HDIVN_1      (0<<1)
+#define S3C2440_CLKDIVN_HDIVN_2      (1<<1)
+#define S3C2440_CLKDIVN_HDIVN_4_8    (2<<1)
+#define S3C2440_CLKDIVN_HDIVN_3_6    (3<<1)
+#define S3C2440_CLKDIVN_UCLK         (1<<3)
+#define S3C2440_CAMDIVN_CAMCLK_MASK  (0xf<<0)
+#define S3C2440_CAMDIVN_CAMCLK_SEL   (1<<4)
+#define S3C2440_CAMDIVN_HCLK3_HALF   (1<<8)
+#define S3C2440_CAMDIVN_HCLK4_HALF   (1<<9)
+#define S3C2440_CAMDIVN_DVSEN        (1<<12)
+
 #define S3C24X0_UART_CHANNELS	3
 #define S3C24X0_SPI_CHANNELS	2
 
-/* S3C2410 only supports 512 Byte HW ECC */
-#define S3C2410_ECCSIZE		512
-#define S3C2410_ECCBYTES	3
+/* S3C2440 only supports 512 Byte HW ECC */
+#define S3C2440_ECCSIZE		512
+#define S3C2440_ECCBYTES	3
 
 enum s3c24x0_uarts_nr {
 	S3C24X0_UART0,

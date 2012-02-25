@@ -24,10 +24,7 @@
  * MA 02111-1307 USA
  */
 
-/* This code should work for both the S3C2400 and the S3C2410
- * as they seem to have the same PLL and clock machinery inside.
- * The different address mapping is handled by the s3c24xx.h files below.
- */
+/* This code work for only the S3C2440 */
 
 #include <common.h>
 #ifdef CONFIG_S3C24X0
@@ -64,7 +61,7 @@ static ulong get_PLLCLK(int pllreg)
 	p = ((r & 0x003F0) >> 4) + 2;
 	s = r & 0x3;
 
-	return (CONFIG_SYS_CLK_FREQ * m) / (p << s);
+	return (CONFIG_SYS_CLK_FREQ * m * 2) / (p << s);
 }
 
 /* return FCLK frequency */
@@ -77,16 +74,55 @@ ulong get_FCLK(void)
 ulong get_HCLK(void)
 {
 	struct s3c24x0_clock_power *clk_power = s3c24x0_get_base_clock_power();
+	unsigned long clkdiv;
+	unsigned long camdiv;
+	int hdiv = 1;
 
-	return (readl(&clk_power->CLKDIVN) & 2) ? get_FCLK() / 2 : get_FCLK();
+	clkdiv = clk_power->CLKDIVN;
+	camdiv = clk_power->CAMDIVN;
+	switch (clkdiv & S3C2440_CLKDIVN_HDIVN_MASK) {
+	case S3C2440_CLKDIVN_HDIVN_1:
+			hdiv = 1;
+		break;
+	case S3C2440_CLKDIVN_HDIVN_2:
+			hdiv = 2;
+		break;
+	case S3C2440_CLKDIVN_HDIVN_4_8:
+			hdiv = (camdiv & S3C2440_CAMDIVN_HCLK4_HALF) ? 8 : 4;
+		break;
+	case S3C2440_CLKDIVN_HDIVN_3_6:
+			hdiv = (camdiv & S3C2440_CAMDIVN_HCLK3_HALF) ? 6 : 3;
+		break;
+		}
+	return get_FCLK() / hdiv;
+
 }
 
 /* return PCLK frequency */
 ulong get_PCLK(void)
 {
 	struct s3c24x0_clock_power *clk_power = s3c24x0_get_base_clock_power();
+	unsigned long clkdiv;
+	unsigned long camdiv;
+	int hdiv = 1;
 
-	return (readl(&clk_power->CLKDIVN) & 1) ? get_HCLK() / 2 : get_HCLK();
+	clkdiv = clk_power->CLKDIVN;
+	camdiv = clk_power->CAMDIVN;
+	switch (clkdiv & S3C2440_CLKDIVN_HDIVN_MASK) {
+		case S3C2440_CLKDIVN_HDIVN_1:
+			hdiv = 1;
+			break;
+		case S3C2440_CLKDIVN_HDIVN_2:
+			hdiv = 2;
+			break;
+		case S3C2440_CLKDIVN_HDIVN_4_8:
+			hdiv = (camdiv & S3C2440_CAMDIVN_HCLK4_HALF) ? 8 : 4;
+			break;
+		case S3C2440_CLKDIVN_HDIVN_3_6:
+			hdiv = (camdiv & S3C2440_CAMDIVN_HCLK3_HALF) ? 6 : 3;
+			break;
+	}
+	return get_FCLK() / hdiv / ((clkdiv & S3C2440_CLKDIVN_PDIVN)? 2:1);
 }
 
 /* return UCLK frequency */
