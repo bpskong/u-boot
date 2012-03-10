@@ -186,6 +186,15 @@ relocate:				/* relocate U-Boot to RAM	    */
 	cmp r0, #0
 	bne nor_relocate
 
+nand_relocate:
+	adr	r0, _start
+	ldr	r1, _TEXT_BASE
+	ldr	r2, _armboot_start
+	ldr	r3, _bss_start
+	sub	r2, r3, r2
+	bl relocate_from_nand /* r0 = addr; r1 = buf; r2 = size; */
+	tst r0, #0x0
+	beq clear_bss
 hang:
 	b hang
 

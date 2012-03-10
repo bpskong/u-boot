@@ -57,14 +57,34 @@ enum s3c24x0_uarts_nr {
 	S3C24X0_UART2
 };
 
-/* S3C2410 device base addresses */
+/* NAND FLASH (see S3C2440A manual chapter 6) */
+struct s3c2440_nand {
+	u32	NFCONF;
+	u32	NFCONT;
+	u32	NFCMD;
+	u32	NFADDR;
+	u32	NFDATA;
+	u32	NFMECCD0;
+	u32	NFMECCD1;
+	u32	NFSECCD;
+	u32	NFSTAT;
+	u32	NFESTAT0;
+	u32	NFESTAT1;
+	u32	NFMECC0;
+	u32	NFMECC1;
+	u32	NFSECC;
+	u32	NFSBLK;
+	u32	NFEBLK;
+};
+
+/* S3C24x0 device base addresses */
 #define S3C24X0_MEMCTL_BASE		0x48000000
 #define S3C24X0_USB_HOST_BASE		0x49000000
 #define S3C24X0_INTERRUPT_BASE		0x4A000000
 #define S3C24X0_DMA_BASE		0x4B000000
 #define S3C24X0_CLOCK_POWER_BASE	0x4C000000
 #define S3C24X0_LCD_BASE		0x4D000000
-#define S3C2410_NAND_BASE		0x4E000000
+#define S3C24X0_NAND_BASE		0x4E000000
 #define S3C24X0_UART_BASE		0x50000000
 #define S3C24X0_TIMER_BASE		0x51000000
 #define S3C24X0_USB_DEVICE_BASE		0x52000140
@@ -112,9 +132,9 @@ static inline struct s3c24x0_lcd *s3c24x0_get_base_lcd(void)
 	return (struct s3c24x0_lcd *)S3C24X0_LCD_BASE;
 }
 
-static inline struct s3c2410_nand *s3c2410_get_base_nand(void)
+static inline struct s3c2440_nand *s3c2410_get_base_nand(void)
 {
-	return (struct s3c2410_nand *)S3C2410_NAND_BASE;
+	return (struct s3c2440_nand *)S3C24X0_NAND_BASE;
 }
 
 static inline struct s3c24x0_uart
