@@ -132,7 +132,7 @@ static inline struct s3c24x0_lcd *s3c24x0_get_base_lcd(void)
 	return (struct s3c24x0_lcd *)S3C24X0_LCD_BASE;
 }
 
-static inline struct s3c2440_nand *s3c2410_get_base_nand(void)
+static inline struct s3c2440_nand *s3c2440_get_base_nand(void)
 {
 	return (struct s3c2440_nand *)S3C24X0_NAND_BASE;
 }

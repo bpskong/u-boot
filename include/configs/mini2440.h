@@ -94,6 +94,11 @@
 #define CONFIG_CMD_DATE
 #define CONFIG_CMD_ELF
 
+/* the MINI2440 has NAND FLASH (256M) */
+#define CONFIG_CMD_NAND
+#define CONFIG_NAND_S3C2440
+#define CONFIG_SYS_NAND_BASE 0x4E000000
+#define CONFIG_SYS_MAX_NAND_DEVICE 1
 
 #define CONFIG_BOOTDELAY	3
 /*#define CONFIG_BOOTARGS	"root=ramfs devfs=mount console=ttySA0,9600" */
@@ -168,9 +173,13 @@
 #define CONFIG_SYS_FLASH_ERASE_TOUT	(5*CONFIG_SYS_HZ) /* Timeout for Flash Erase */
 #define CONFIG_SYS_FLASH_WRITE_TOUT	(5*CONFIG_SYS_HZ) /* Timeout for Flash Write */
 
-#define	CONFIG_ENV_IS_IN_FLASH
+#define	CONFIG_ENV_IS_IN_NAND
 #ifdef CONFIG_ENV_IS_IN_FLASH
 #define CONFIG_ENV_SIZE		0x10000	/* Total Size of Environment Sector (64K) */
+#endif
+#ifdef CONFIG_ENV_IS_IN_NAND
+#define CONFIG_ENV_OFFSET 0x0FFE0000
+#define CONFIG_ENV_SIZE		0x20000	/* Total Size of Environment Sector (128K) */
 #endif
 
 #endif	/* __CONFIG_H */
