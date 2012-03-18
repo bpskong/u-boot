@@ -365,8 +365,7 @@ static int dm9000_init(struct eth_device *dev, bd_t *bd)
 		udelay(1000);
 		i++;
 		if (i == 10000) {
-			printf("could not establish link\n");
-			return 0;
+			break;
 		}
 	}
 
