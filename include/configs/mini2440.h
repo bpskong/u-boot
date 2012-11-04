@@ -103,14 +103,18 @@
 #define CONFIG_SYS_MAX_NAND_DEVICE 1
 
 #define CONFIG_BOOTDELAY	3
-/*#define CONFIG_BOOTARGS	"root=ramfs devfs=mount console=ttySA0,9600" */
+#define CONFIG_SETUP_MEMORY_TAGS
+#define CONFIG_INITRD_TAG
+#define CONFIG_CMDLINE_TAG
+#define CONFIG_BOOTARGS "noinitrd root=/dev/nfs rw nfsroot=10.0.0.1:/media/nfs/rootfs\
+	ip=10.0.0.110:10.0.0.1:10.0.0.1:255.255.255.0 init=/linuxrc console=ttySAC0,115200 mem=64M"
 #define CONFIG_ETHADDR	FF:FF:FF:FF:FF:FF
 #define CONFIG_NETMASK          255.255.255.0
 #define CONFIG_IPADDR		10.0.0.110
 #define CONFIG_SERVERIP		10.0.0.1
 #define CONFIG_GATEWAYIP	10.0.0.1
 /*#define CONFIG_BOOTFILE	"elinos-lart" */
-/*#define CONFIG_BOOTCOMMAND	"tftp; bootm" */
+#define CONFIG_BOOTCOMMAND	"tftp 0x30008000 uImage; bootm"
 
 #if defined(CONFIG_CMD_KGDB)
 #define CONFIG_KGDB_BAUDRATE	115200		/* speed to run kgdb serial port */
